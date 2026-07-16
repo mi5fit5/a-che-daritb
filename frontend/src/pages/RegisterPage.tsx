@@ -7,6 +7,8 @@ export const RegisterPage: React.FC = () => {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
+	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [localError, setLocalError] = useState('');
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -63,31 +65,51 @@ export const RegisterPage: React.FC = () => {
 						<label className='form-label' htmlFor='register-password'>
 							Пароль
 						</label>
-						<input
-							id='register-password'
-							className='form-input'
-							type='password'
-							placeholder='Минимум 6 символов'
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							required
-							minLength={6}
-						/>
+						<div className='password-wrapper'>
+							<input
+								id='register-password'
+								className='form-input'
+								type={showPassword ? 'text' : 'password'}
+								placeholder='Минимум 6 символов'
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								required
+								minLength={6}
+							/>
+							<button
+								type='button'
+								className='password-toggle'
+								onClick={() => setShowPassword(!showPassword)}
+								aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>
+								{showPassword ? '🙈' : '👁'}
+							</button>
+						</div>
 					</div>
 
 					<div className='form-group'>
 						<label className='form-label' htmlFor='register-confirm'>
 							Подтвердите пароль
 						</label>
-						<input
-							id='register-confirm'
-							className='form-input'
-							type='password'
-							placeholder='Повторите пароль'
-							value={confirmPassword}
-							onChange={(e) => setConfirmPassword(e.target.value)}
-							required
-						/>
+						<div className='password-wrapper'>
+							<input
+								id='register-confirm'
+								className='form-input'
+								type={showConfirmPassword ? 'text' : 'password'}
+								placeholder='Повторите пароль'
+								value={confirmPassword}
+								onChange={(e) => setConfirmPassword(e.target.value)}
+								required
+							/>
+							<button
+								type='button'
+								className='password-toggle'
+								onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+								aria-label={
+									showConfirmPassword ? 'Скрыть пароль' : 'Показать пароль'
+								}>
+								{showConfirmPassword ? '🙈' : '👁'}
+							</button>
+						</div>
 					</div>
 
 					<button

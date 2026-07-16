@@ -7,6 +7,7 @@ import logoUrl from '../assets/images/logo.svg';
 export const LoginPage: React.FC = () => {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
+	const [showPassword, setShowPassword] = useState(false);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const { isLoading, error } = useSelector((state) => state.auth);
@@ -50,15 +51,24 @@ export const LoginPage: React.FC = () => {
 						<label className='form-label' htmlFor='login-password'>
 							Пароль
 						</label>
-						<input
-							id='login-password'
-							className='form-input'
-							type='password'
-							placeholder='Введите пароль'
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							required
-						/>
+						<div className='password-wrapper'>
+							<input
+								id='login-password'
+								className='form-input'
+								type={showPassword ? 'text' : 'password'}
+								placeholder='Введите пароль'
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								required
+							/>
+							<button
+								type='button'
+								className='password-toggle'
+								onClick={() => setShowPassword(!showPassword)}
+								aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>
+								{showPassword ? '🙈' : '👁'}
+							</button>
+						</div>
 					</div>
 
 					<button
