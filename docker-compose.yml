@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # ─── MongoDB ───────────────────────────
+  mongo:
+    image: mongo:7
+    container_name: wishlist-mongo
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - wishlist-net
+
+  # ─── Backend ───────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: wishlist-backend
+    restart: unless-stopped
+    ports:
+      - '5000:5000'
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/wishlist-manager
+      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET:-access-secret-dev}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-refresh-secret-dev}
+      - PORT=5000
+      - NODE_ENV=production
+      - CLIENT_URL=http://localhost
+    depends_on:
+      - mongo
+    networks:
+      - wishlist-net
+
+  # ─── Frontend ──────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: wishlist-frontend
+    restart: unless-stopped
+    ports:
+      - '80:80'
+    depends_on:
+      - backend
+    networks:
+      - wishlist-net
+
+volumes:
+  mongo-data:
+
+networks:
+  wishlist-net:
+    driver: bridge
