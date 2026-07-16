@@ -43,8 +43,16 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 			accessToken,
 			user: { id: user._id, username: user.username },
 		});
-	} catch (_err) {
-		res.status(500).json({ message: 'Ошибка регистрации' });
+	} catch (err: unknown) {
+		console.error('Ошибка регистрации:', err);
+		const error = err as Error;
+		res
+			.status(500)
+			.json({
+				message: 'Ошибка регистрации',
+				error: error.message,
+				stack: error.stack,
+			});
 	}
 };
 
