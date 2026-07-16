@@ -14,6 +14,34 @@ export type TWishlistCard = {
 	createdAt: string;
 };
 
+// Уровни важности вещи
+export const ITEM_PRIORITIES = [
+	'essential',
+	'high',
+	'medium',
+	'low',
+	'fun',
+] as const;
+
+export type TItemPriority = (typeof ITEM_PRIORITIES)[number];
+
+export const PRIORITY_LABELS: Record<TItemPriority, string> = {
+	essential: 'Жизненно необходимо',
+	high: 'Очень хочу',
+	medium: 'Хотелось бы',
+	low: 'Было бы неплохо',
+	fun: 'По фану',
+};
+
+// Числовой вес приоритета (больше = важнее)
+export const PRIORITY_WEIGHT: Record<TItemPriority, number> = {
+	essential: 5,
+	high: 4,
+	medium: 3,
+	low: 2,
+	fun: 1,
+};
+
 // Тип элемента вишлиста
 export type TWishlistItem = {
 	_id: string;
@@ -21,6 +49,8 @@ export type TWishlistItem = {
 	title: string;
 	image: string;
 	shopUrl: string;
+	price: number;
+	priority?: TItemPriority;
 	isBooked: boolean;
 	isBookedByMe: boolean;
 	createdAt: string;
@@ -81,4 +111,6 @@ export type TCreateItemData = {
 	title: string;
 	image: string;
 	shopUrl: string;
+	price: number;
+	priority?: TItemPriority;
 };

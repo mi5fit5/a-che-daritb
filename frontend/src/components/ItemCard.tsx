@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { wishlistRequests } from '@utils-api/wishlistRequests';
 import type { TWishlistItem } from '@types';
+import { PRIORITY_LABELS } from '@types';
 import { useDispatch } from '@store';
 import { fetchWishlistById } from '@slices/wishlistSlice';
 
@@ -9,6 +10,10 @@ interface Props {
 	wishlistId: string;
 	isOwner: boolean;
 }
+
+const formatPrice = (price: number): string => {
+	return price.toLocaleString('ru-RU') + ' ₽';
+};
 
 export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 	const dispatch = useDispatch();
@@ -62,8 +67,7 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 	}
 
 	return (
-		<div
-			className={`item-card ${item.isBooked && !isOwner ? 'is-booked' : ''}`}>
+		<div className={`item-card ${item.isBooked ? 'is-booked' : ''}`}>
 			<img
 				className='item-card-image'
 				src={item.image}
@@ -76,7 +80,21 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 
 			<div className='item-card-body'>
 				<div>
+					{item.priority && (
+						<div style={{ marginBottom: 'var(--space-xs)' }}>
+							<span className={`item-card-priority priority-${item.priority}`}>
+								{PRIORITY_LABELS[item.priority]}
+							</span>
+						</div>
+					)}
 					<h4 className='item-card-title'>{item.title}</h4>
+
+					<div className='item-card-meta'>
+						{item.price != null && item.price > 0 && (
+							<span className='item-card-price'>{formatPrice(item.price)}</span>
+						)}
+					</div>
+
 					<a
 						className='item-card-link'
 						href={item.shopUrl}
@@ -88,13 +106,17 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 
 				<div className='item-card-actions'>
 					{isOwner ? (
-						/* Автор видит только кнопку удаления, никаких бронирований */
-						<button
-							className='btn btn-danger btn-sm'
-							onClick={handleDelete}
-							disabled={isDeleting}>
-							{isDeleting ? '...' : 'Удалить'}
-						</button>
+						<>
+							{item.isBooked && (
+								<span className='item-card-owner-booked'>✓ Забронировано</span>
+							)}
+							<button
+								className='btn btn-danger btn-sm'
+								onClick={handleDelete}
+								disabled={isDeleting}>
+								{isDeleting ? '...' : 'Удалить'}
+							</button>
+						</>
 					) : (
 						<>
 							{item.isBookedByMe ? (

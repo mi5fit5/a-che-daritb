@@ -3,6 +3,8 @@ import { AxiosError } from 'axios';
 import { useDispatch } from '@store';
 import { fetchWishlistById } from '@slices/wishlistSlice';
 import { wishlistRequests } from '@utils-api/wishlistRequests';
+import { ITEM_PRIORITIES, PRIORITY_LABELS } from '@types';
+import type { TItemPriority } from '@types';
 
 interface Props {
 	wishlistId: string;
@@ -13,6 +15,8 @@ export const AddItemModal: React.FC<Props> = ({ wishlistId, onClose }) => {
 	const [title, setTitle] = useState('');
 	const [image, setImage] = useState('');
 	const [shopUrl, setShopUrl] = useState('');
+	const [price, setPrice] = useState('');
+	const [priority, setPriority] = useState<TItemPriority | ''>('');
 	const [isAdding, setIsAdding] = useState(false);
 	const [error, setError] = useState('');
 	const dispatch = useDispatch();
@@ -30,7 +34,13 @@ export const AddItemModal: React.FC<Props> = ({ wishlistId, onClose }) => {
 		setError('');
 		setIsAdding(true);
 		try {
-			await wishlistRequests.addItem(wishlistId, { title, image, shopUrl });
+			await wishlistRequests.addItem(wishlistId, {
+				title,
+				image,
+				shopUrl,
+				price: parseFloat(price),
+				...(priority && { priority }),
+			});
 			dispatch(fetchWishlistById(wishlistId));
 			onClose();
 		} catch (err: unknown) {
@@ -72,7 +82,7 @@ export const AddItemModal: React.FC<Props> = ({ wishlistId, onClose }) => {
 							id='item-title'
 							className='form-input'
 							type='text'
-							placeholder='Например: Sony WH-1000XM5'
+							placeholder='Название вещи'
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
 							required
@@ -88,7 +98,7 @@ export const AddItemModal: React.FC<Props> = ({ wishlistId, onClose }) => {
 							id='item-image'
 							className='form-input'
 							type='url'
-							placeholder='https://example.com/product.jpg'
+							placeholder='Ссылка на URL-картинки'
 							value={image}
 							onChange={(e) => setImage(e.target.value)}
 							required
@@ -121,11 +131,43 @@ export const AddItemModal: React.FC<Props> = ({ wishlistId, onClose }) => {
 							id='item-shop'
 							className='form-input'
 							type='url'
-							placeholder='https://store.com/product/123'
+							placeholder='Ссылка на магазин'
 							value={shopUrl}
 							onChange={(e) => setShopUrl(e.target.value)}
 							required
 						/>
+					</div>
+
+					<div className='form-group'>
+						<label className='form-label' htmlFor='item-price'>
+							Стоимость, ₽
+						</label>
+						<input
+							id='item-price'
+							className='form-input'
+							type='number'
+							placeholder='Укажите стоимость в рублях'
+							min='0'
+							step='1'
+							value={price}
+							onChange={(e) => setPrice(e.target.value)}
+							required
+						/>
+					</div>
+
+					<div className='form-group'>
+						<label className='form-label'>Важность</label>
+						<div className='priority-selector'>
+							{ITEM_PRIORITIES.map((p) => (
+								<button
+									key={p}
+									type='button'
+									className={`priority-option priority-${p} ${priority === p ? 'selected' : ''}`}
+									onClick={() => setPriority(priority === p ? '' : p)}>
+									{PRIORITY_LABELS[p]}
+								</button>
+							))}
+						</div>
 					</div>
 
 					<div className='modal-actions'>
