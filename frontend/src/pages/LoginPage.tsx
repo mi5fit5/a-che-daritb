@@ -63,11 +63,10 @@ export const LoginPage: React.FC = () => {
 							/>
 							<button
 								type='button'
-								className='password-toggle'
+								className={`password-toggle ${showPassword ? 'is-visible' : ''}`}
 								onClick={() => setShowPassword(!showPassword)}
-								aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>
-								{showPassword ? '🙈' : '👁'}
-							</button>
+								aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
+							/>
 						</div>
 					</div>
 

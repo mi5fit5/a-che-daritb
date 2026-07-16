@@ -755,27 +755,29 @@ img {
 // Password toggle
 .password-wrapper {
 	position: relative;
+	
+	.form-input {
+		padding-right: 40px;
+	}
 }
 
 .password-toggle {
 	position: absolute;
-	right: 0;
-	top: 0;
-	width: 46px;
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: var(--accent-primary);
-	border: none;
-	border-left: 2px solid var(--border-medium);
-	color: #121214;
+	right: 14px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 14px;
+	height: 14px;
+	display: block;
+	background: transparent;
+	border: 2px solid var(--accent-primary);
+	border-radius: 2px;
 	cursor: pointer;
-	font-size: var(--font-size-base);
-	transition: all var(--transition-fast);
+	padding: 0;
+	transition: background var(--transition-fast);
 
-	&:hover {
-		background: var(--accent-primary-hover);
+	&.is-visible {
+		background: var(--accent-primary);
 	}
 }
 

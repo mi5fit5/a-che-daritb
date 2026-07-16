@@ -78,11 +78,10 @@ export const RegisterPage: React.FC = () => {
 							/>
 							<button
 								type='button'
-								className='password-toggle'
+								className={`password-toggle ${showPassword ? 'is-visible' : ''}`}
 								onClick={() => setShowPassword(!showPassword)}
-								aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>
-								{showPassword ? '🙈' : '👁'}
-							</button>
+								aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
+							/>
 						</div>
 					</div>
 
@@ -102,13 +101,10 @@ export const RegisterPage: React.FC = () => {
 							/>
 							<button
 								type='button'
-								className='password-toggle'
+								className={`password-toggle ${showConfirmPassword ? 'is-visible' : ''}`}
 								onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-								aria-label={
-									showConfirmPassword ? 'Скрыть пароль' : 'Показать пароль'
-								}>
-								{showConfirmPassword ? '🙈' : '👁'}
-							</button>
+								aria-label={showConfirmPassword ? 'Скрыть пароль' : 'Показать пароль'}
+							/>
 						</div>
 					</div>
 
