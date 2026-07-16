@@ -153,7 +153,10 @@ const wishlistSlice = createSlice({
 
 			// Загрузка вишлиста по ID
 			.addCase(fetchWishlistById.pending, (state) => {
-				state.isLoading = true;
+				// Показываем лоадер только при первой загрузке, не при рефетче
+				if (!state.currentWishlist) {
+					state.isLoading = true;
+				}
 			})
 			.addCase(fetchWishlistById.fulfilled, (state, action) => {
 				state.isLoading = false;

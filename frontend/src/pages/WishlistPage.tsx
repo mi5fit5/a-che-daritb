@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from '@store';
 import { fetchWishlistById, deleteWishlist } from '@slices/wishlistSlice';
@@ -6,6 +6,35 @@ import { ItemCard } from '@components/ItemCard';
 import { AddItemModal } from '@components/modals/AddItemModal';
 import { Loader } from '@components/ui/Loader';
 import type { TWishlistItem } from '@types';
+import { PRIORITY_WEIGHT } from '@types';
+
+type SortMode = 'default' | 'price-asc' | 'price-desc' | 'priority';
+
+const SORT_OPTIONS: { value: SortMode; label: string }[] = [
+	{ value: 'default', label: 'По умолчанию' },
+	{ value: 'price-desc', label: 'Цена ↓' },
+	{ value: 'price-asc', label: 'Цена ↑' },
+	{ value: 'priority', label: 'По важности' },
+];
+
+function sortItems(items: TWishlistItem[], mode: SortMode): TWishlistItem[] {
+	if (mode === 'default') return items;
+
+	return [...items].sort((a, b) => {
+		if (mode === 'price-desc') {
+			return (b.price ?? 0) - (a.price ?? 0);
+		}
+		if (mode === 'price-asc') {
+			return (a.price ?? 0) - (b.price ?? 0);
+		}
+		if (mode === 'priority') {
+			const wa = a.priority ? PRIORITY_WEIGHT[a.priority] : 0;
+			const wb = b.priority ? PRIORITY_WEIGHT[b.priority] : 0;
+			return wb - wa;
+		}
+		return 0;
+	});
+}
 
 export const WishlistPage: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
@@ -19,6 +48,7 @@ export const WishlistPage: React.FC = () => {
 
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [showAddItem, setShowAddItem] = useState(false);
+	const [sortMode, setSortMode] = useState<SortMode>('default');
 
 	useEffect(() => {
 		if (id) {
@@ -37,7 +67,13 @@ export const WishlistPage: React.FC = () => {
 		}
 	};
 
-	if (isLoading) return <Loader />;
+	const sortedItems = useMemo(() => {
+		if (!wishlist) return [];
+		return sortItems(wishlist.items, sortMode);
+	}, [wishlist, sortMode]);
+
+	// Показываем лоадер только при первоначальной загрузке (нет данных)
+	if (isLoading && !wishlist) return <Loader />;
 
 	if (error || !wishlist) {
 		return (
@@ -106,6 +142,21 @@ export const WishlistPage: React.FC = () => {
 				</span>
 			</div>
 
+			{wishlist.items.length > 0 && (
+				<div
+					className='sort-controls'
+					style={{ marginBottom: 'var(--space-lg)' }}>
+					{SORT_OPTIONS.map((opt) => (
+						<button
+							key={opt.value}
+							className={`sort-btn ${sortMode === opt.value ? 'active' : ''}`}
+							onClick={() => setSortMode(opt.value)}>
+							{opt.label}
+						</button>
+					))}
+				</div>
+			)}
+
 			{wishlist.items.length === 0 ? (
 				<div className='empty-state'>
 					<h2 className='empty-state-title'>Список пуст</h2>
@@ -117,7 +168,7 @@ export const WishlistPage: React.FC = () => {
 				</div>
 			) : (
 				<div className='wishlist-items-list'>
-					{wishlist.items.map((item: TWishlistItem) => (
+					{sortedItems.map((item: TWishlistItem) => (
 						<ItemCard
 							key={item._id}
 							item={item}
