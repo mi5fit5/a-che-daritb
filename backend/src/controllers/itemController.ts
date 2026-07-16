@@ -16,12 +16,14 @@ export const addItem = async (req: Request, res: Response): Promise<void> => {
 			return;
 		}
 
-		const { title, image, shopUrl } = req.body;
+		const { title, image, shopUrl, price, priority } = req.body;
 		const item = await Item.create({
 			wishlist: wishlist._id,
 			title,
 			image,
 			shopUrl,
+			...(price !== undefined && { price }),
+			...(priority !== undefined && { priority }),
 		});
 
 		res.status(201).json(item);
@@ -48,10 +50,12 @@ export const updateItem = async (
 			return;
 		}
 
-		const { title, image, shopUrl } = req.body;
+		const { title, image, shopUrl, price, priority } = req.body;
 		if (title !== undefined) item.title = title;
 		if (image !== undefined) item.image = image;
 		if (shopUrl !== undefined) item.shopUrl = shopUrl;
+		if (price !== undefined) item.price = price;
+		if (priority !== undefined) item.priority = priority;
 
 		await item.save();
 		res.json(item);

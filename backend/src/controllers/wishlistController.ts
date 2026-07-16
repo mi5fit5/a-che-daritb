@@ -134,17 +134,17 @@ export const getWishlistById = async (
 		const isOwner = req.user!.userId === wishlist.author._id.toString();
 
 		let itemsWithBooking;
+		const itemIds = items.map((i) => i._id);
+		const bookings = await Booking.find({ item: { $in: itemIds } }).lean();
+		const bookingMap = new Map(bookings.map((b) => [b.item.toString(), b]));
+
 		if (isOwner) {
 			itemsWithBooking = items.map((item) => ({
 				...item,
-				isBooked: false,
+				isBooked: bookingMap.has(item._id.toString()),
 				isBookedByMe: false,
 			}));
 		} else {
-			const itemIds = items.map((i) => i._id);
-			const bookings = await Booking.find({ item: { $in: itemIds } }).lean();
-			const bookingMap = new Map(bookings.map((b) => [b.item.toString(), b]));
-
 			itemsWithBooking = items.map((item) => {
 				const booking = bookingMap.get(item._id.toString());
 				return {
