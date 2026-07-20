@@ -103,7 +103,9 @@ export const RegisterPage: React.FC = () => {
 								type='button'
 								className={`password-toggle ${showConfirmPassword ? 'is-visible' : ''}`}
 								onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-								aria-label={showConfirmPassword ? 'Скрыть пароль' : 'Показать пароль'}
+								aria-label={
+									showConfirmPassword ? 'Скрыть пароль' : 'Показать пароль'
+								}
 							/>
 						</div>
 					</div>

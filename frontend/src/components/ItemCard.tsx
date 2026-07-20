@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { wishlistRequests } from '@utils-api/wishlistRequests';
-import type { TWishlistItem } from '@types';
-import { PRIORITY_LABELS } from '@types';
+import type { TWishlistItem, TItemPriority } from '@types';
+import { PRIORITY_WEIGHT } from '@types';
 import { useDispatch } from '@store';
 import { fetchWishlistById } from '@slices/wishlistSlice';
 
@@ -58,7 +58,6 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 		}
 	};
 
-	// Определяем hostname из ссылки для удобного отображения
 	let shopDomain = '';
 	try {
 		shopDomain = new URL(item.shopUrl).hostname.replace('www.', '');
@@ -66,8 +65,25 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 		shopDomain = item.shopUrl;
 	}
 
+	const renderStars = (priority?: TItemPriority) => {
+		const weight = priority ? PRIORITY_WEIGHT[priority] : 1;
+		return (
+			<div className='item-card-stars'>
+				{[1, 2, 3, 4, 5].map((star) => (
+					<span
+						key={star}
+						className={`star ${star <= weight ? 'filled' : 'empty'}`}>
+						★
+					</span>
+				))}
+			</div>
+		);
+	};
+
 	return (
 		<div className={`item-card ${item.isBooked ? 'is-booked' : ''}`}>
+			{renderStars(item.priority)}
+
 			<img
 				className='item-card-image'
 				src={item.image}
@@ -79,30 +95,19 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 			/>
 
 			<div className='item-card-body'>
-				<div>
-					{item.priority && (
-						<div style={{ marginBottom: 'var(--space-xs)' }}>
-							<span className={`item-card-priority priority-${item.priority}`}>
-								{PRIORITY_LABELS[item.priority]}
-							</span>
-						</div>
-					)}
-					<h4 className='item-card-title'>{item.title}</h4>
+				{item.price != null && item.price > 0 && (
+					<span className='item-card-price'>{formatPrice(item.price)}</span>
+				)}
 
-					<div className='item-card-meta'>
-						{item.price != null && item.price > 0 && (
-							<span className='item-card-price'>{formatPrice(item.price)}</span>
-						)}
-					</div>
+				<h4 className='item-card-title'>{item.title}</h4>
 
-					<a
-						className='item-card-link'
-						href={item.shopUrl}
-						target='_blank'
-						rel='noopener noreferrer'>
-						🔗 {shopDomain}
-					</a>
-				</div>
+				<a
+					className='item-card-link'
+					href={item.shopUrl}
+					target='_blank'
+					rel='noopener noreferrer'>
+					🔗 {shopDomain}
+				</a>
 
 				<div className='item-card-actions'>
 					{isOwner ? (
@@ -120,22 +125,22 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 					) : (
 						<>
 							{item.isBookedByMe ? (
-								<>
-									<span className='item-card-status booked'>
-										Вы забронировали
-									</span>
-									<button
-										className='btn btn-secondary btn-sm'
-										onClick={handleUnbook}
-										disabled={isUnbooking}>
-										{isUnbooking ? '...' : 'Снять бронь'}
-									</button>
-								</>
+								<button
+									className='btn btn-outline-warning btn-sm'
+									onClick={handleUnbook}
+									disabled={isUnbooking}
+									style={{ width: '100%' }}>
+									{isUnbooking ? '...' : 'Снять бронь'}
+								</button>
 							) : item.isBooked ? (
-								<span className='item-card-status booked'>Забронировано</span>
+								<span
+									className='item-card-status booked'
+									style={{ width: '100%', justifyContent: 'center' }}>
+									Забронировано
+								</span>
 							) : (
 								<button
-									className='btn btn-primary btn-sm'
+									className='btn btn-outline-primary btn-sm'
 									onClick={handleBook}
 									disabled={isBooking}>
 									{isBooking ? '...' : 'Забронировать'}

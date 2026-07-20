@@ -47,9 +47,7 @@ export const CreateWishlistModal: React.FC<Props> = ({ onClose }) => {
 	};
 
 	return (
-		<div
-			className='modal-overlay'
-			onClick={(e) => e.target === e.currentTarget && onClose()}>
+		<div className='modal-overlay'>
 			<div className='modal'>
 				<div className='modal-header'>
 					<h2 className='modal-title'>Новый вишлист</h2>

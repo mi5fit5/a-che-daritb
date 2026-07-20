@@ -46,13 +46,11 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 	} catch (err: unknown) {
 		console.error('Ошибка регистрации:', err);
 		const error = err as Error;
-		res
-			.status(500)
-			.json({
-				message: 'Ошибка регистрации',
-				error: error.message,
-				stack: error.stack,
-			});
+		res.status(500).json({
+			message: 'Ошибка регистрации',
+			error: error.message,
+			stack: error.stack,
+		});
 	}
 };
 

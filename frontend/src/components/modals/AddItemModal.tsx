@@ -3,8 +3,8 @@ import { AxiosError } from 'axios';
 import { useDispatch } from '@store';
 import { fetchWishlistById } from '@slices/wishlistSlice';
 import { wishlistRequests } from '@utils-api/wishlistRequests';
-import { ITEM_PRIORITIES, PRIORITY_LABELS } from '@types';
 import type { TItemPriority } from '@types';
+import { PRIORITY_WEIGHT } from '@types';
 
 interface Props {
 	wishlistId: string;
@@ -16,7 +16,7 @@ export const AddItemModal: React.FC<Props> = ({ wishlistId, onClose }) => {
 	const [image, setImage] = useState('');
 	const [shopUrl, setShopUrl] = useState('');
 	const [price, setPrice] = useState('');
-	const [priority, setPriority] = useState<TItemPriority | ''>('');
+	const [priority, setPriority] = useState<TItemPriority>('fun');
 	const [isAdding, setIsAdding] = useState(false);
 	const [error, setError] = useState('');
 	const dispatch = useDispatch();
@@ -39,7 +39,7 @@ export const AddItemModal: React.FC<Props> = ({ wishlistId, onClose }) => {
 				image,
 				shopUrl,
 				price: parseFloat(price),
-				...(priority && { priority }),
+				priority,
 			});
 			dispatch(fetchWishlistById(wishlistId));
 			onClose();
@@ -52,10 +52,17 @@ export const AddItemModal: React.FC<Props> = ({ wishlistId, onClose }) => {
 		}
 	};
 
+	const priorityWeight = PRIORITY_WEIGHT[priority];
+	const priorityList: TItemPriority[] = [
+		'fun',
+		'low',
+		'medium',
+		'high',
+		'essential',
+	];
+
 	return (
-		<div
-			className='modal-overlay'
-			onClick={(e) => e.target === e.currentTarget && onClose()}>
+		<div className='modal-overlay'>
 			<div className='modal'>
 				<div className='modal-header'>
 					<h2 className='modal-title'>Добавить вещь</h2>
@@ -158,15 +165,27 @@ export const AddItemModal: React.FC<Props> = ({ wishlistId, onClose }) => {
 					<div className='form-group'>
 						<label className='form-label'>Важность</label>
 						<div className='priority-selector'>
-							{ITEM_PRIORITIES.map((p) => (
-								<button
-									key={p}
-									type='button'
-									className={`priority-option priority-${p} ${priority === p ? 'selected' : ''}`}
-									onClick={() => setPriority(priority === p ? '' : p)}>
-									{PRIORITY_LABELS[p]}
-								</button>
-							))}
+							<div className='priority-stars-preview'>
+								{[1, 2, 3, 4, 5].map((star) => (
+									<span
+										key={star}
+										className={`star ${star <= priorityWeight ? 'filled' : 'empty'}`}>
+										★
+									</span>
+								))}
+							</div>
+							<input
+								type='range'
+								min='1'
+								max='5'
+								step='1'
+								value={priorityWeight}
+								className='priority-slider'
+								onChange={(e) => {
+									const val = parseInt(e.target.value);
+									setPriority(priorityList[val - 1]);
+								}}
+							/>
 						</div>
 					</div>
 
