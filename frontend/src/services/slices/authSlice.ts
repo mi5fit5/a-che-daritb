@@ -16,9 +16,13 @@ export const login = createAsyncThunk(
 			const data = await authRequests.login(credentials);
 			return data;
 		} catch (error: unknown) {
-			const message =
-				error instanceof AxiosError ? error.response?.data?.message : undefined;
-			return rejectWithValue(message || 'Ошибка авторизации');
+			if (error instanceof AxiosError) {
+				const message = error.response?.data?.message;
+				if (message) return rejectWithValue(message);
+				if (!error.response)
+					return rejectWithValue('Сервер недоступен. Попробуйте позже');
+			}
+			return rejectWithValue('Ошибка авторизации');
 		}
 	}
 );
@@ -31,9 +35,13 @@ export const register = createAsyncThunk(
 			const data = await authRequests.register(credentials);
 			return data;
 		} catch (error: unknown) {
-			const message =
-				error instanceof AxiosError ? error.response?.data?.message : undefined;
-			return rejectWithValue(message || 'Ошибка регистрации');
+			if (error instanceof AxiosError) {
+				const message = error.response?.data?.message;
+				if (message) return rejectWithValue(message);
+				if (!error.response)
+					return rejectWithValue('Сервер недоступен. Попробуйте позже');
+			}
+			return rejectWithValue('Ошибка регистрации');
 		}
 	}
 );
@@ -72,6 +80,7 @@ type TAuthState = {
 	user: TUser | null;
 	isAuthenticated: boolean;
 	isLoading: boolean;
+	isInitializing: boolean;
 	error: string | null;
 };
 
@@ -79,7 +88,8 @@ type TAuthState = {
 const initialState: TAuthState = {
 	user: null,
 	isAuthenticated: false,
-	isLoading: true,
+	isLoading: false,
+	isInitializing: true,
 	error: null,
 };
 
@@ -138,15 +148,15 @@ const authSlice = createSlice({
 
 			// Получение данных текущего пользователя
 			.addCase(fetchMe.pending, (state) => {
-				state.isLoading = true;
+				state.isInitializing = true;
 			})
 			.addCase(fetchMe.fulfilled, (state, action: PayloadAction<TUser>) => {
-				state.isLoading = false;
+				state.isInitializing = false;
 				state.isAuthenticated = true;
 				state.user = action.payload;
 			})
 			.addCase(fetchMe.rejected, (state) => {
-				state.isLoading = false;
+				state.isInitializing = false;
 				state.isAuthenticated = false;
 				state.user = null;
 			});

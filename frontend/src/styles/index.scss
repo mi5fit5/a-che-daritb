@@ -482,6 +482,7 @@ img {
 
 .auth-error {
 	padding: var(--space-md);
+	margin-bottom: var(--space-md);
 	background: var(--danger-bg);
 	border: 1px solid rgba(248, 113, 113, 0.2);
 	border-radius: var(--radius-sm);
@@ -778,12 +779,13 @@ img {
 }
 
 .item-card-owner-booked {
-	display: inline-flex;
+	display: flex;
 	align-items: center;
-	gap: var(--space-xs);
+	justify-content: center;
+	width: 100%;
 	padding: 6px 14px;
-	border: 2px solid var(--success);
-	color: var(--success);
+	border: 2px solid var(--warning);
+	color: var(--warning);
 	font-size: var(--font-size-xs);
 	font-weight: 800;
 	text-transform: uppercase;

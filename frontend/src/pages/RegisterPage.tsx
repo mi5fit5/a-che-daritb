@@ -28,8 +28,12 @@ export const RegisterPage: React.FC = () => {
 			return;
 		}
 
-		await dispatch(register({ username, password })).unwrap();
-		navigate('/');
+		try {
+			await dispatch(register({ username, password })).unwrap();
+			navigate('/');
+		} catch {
+			/* */
+		}
 	};
 
 	const displayError = localError || error;

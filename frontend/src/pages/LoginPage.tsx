@@ -16,8 +16,12 @@ export const LoginPage: React.FC = () => {
 		e.preventDefault();
 		dispatch(clearError());
 
-		await dispatch(login({ username, password })).unwrap();
-		navigate('/');
+		try {
+			await dispatch(login({ username, password })).unwrap();
+			navigate('/');
+		} catch {
+			/* */
+		}
 	};
 
 	return (

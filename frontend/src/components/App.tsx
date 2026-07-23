@@ -14,7 +14,9 @@ import { MyWishlistsPage } from '@pages/MyWishlistsPage';
 
 // Корневой компонент приложения
 export const App = () => {
-	const { isAuthenticated, isLoading } = useSelector((state) => state.auth);
+	const { isAuthenticated, isInitializing } = useSelector(
+		(state) => state.auth
+	);
 	const dispatch = useDispatch();
 
 	// Проверка сессии при монтировании
@@ -22,7 +24,7 @@ export const App = () => {
 		dispatch(fetchMe());
 	}, [dispatch]);
 
-	if (isLoading) {
+	if (isInitializing) {
 		return null;
 	}
 
