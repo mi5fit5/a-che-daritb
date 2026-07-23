@@ -47,7 +47,11 @@ export const CreateWishlistModal: React.FC<Props> = ({ onClose }) => {
 	};
 
 	return (
-		<div className='modal-overlay'>
+		<div
+			className='modal-overlay'
+			onMouseDown={(e) => {
+				if (e.target === e.currentTarget) onClose();
+			}}>
 			<div className='modal'>
 				<div className='modal-header'>
 					<h2 className='modal-title'>Новый вишлист</h2>
@@ -96,24 +100,6 @@ export const CreateWishlistModal: React.FC<Props> = ({ onClose }) => {
 							required
 						/>
 					</div>
-
-					{coverImage && (
-						<div
-							style={{
-								borderRadius: 'var(--radius-sm)',
-								overflow: 'hidden',
-								maxHeight: 160,
-							}}>
-							<img
-								src={coverImage}
-								alt='Preview'
-								style={{ width: '100%', height: 160, objectFit: 'cover' }}
-								onError={(e) => {
-									(e.target as HTMLImageElement).style.display = 'none';
-								}}
-							/>
-						</div>
-					)}
 
 					<div className='modal-actions'>
 						<button

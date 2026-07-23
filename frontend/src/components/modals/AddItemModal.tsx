@@ -62,7 +62,11 @@ export const AddItemModal: React.FC<Props> = ({ wishlistId, onClose }) => {
 	];
 
 	return (
-		<div className='modal-overlay'>
+		<div
+			className='modal-overlay'
+			onMouseDown={(e) => {
+				if (e.target === e.currentTarget) onClose();
+			}}>
 			<div className='modal'>
 				<div className='modal-header'>
 					<h2 className='modal-title'>Добавить вещь</h2>
@@ -111,24 +115,6 @@ export const AddItemModal: React.FC<Props> = ({ wishlistId, onClose }) => {
 							required
 						/>
 					</div>
-
-					{image && (
-						<div
-							style={{
-								borderRadius: 'var(--radius-sm)',
-								overflow: 'hidden',
-								maxHeight: 120,
-							}}>
-							<img
-								src={image}
-								alt='Preview'
-								style={{ width: '100%', height: 120, objectFit: 'cover' }}
-								onError={(e) => {
-									(e.target as HTMLImageElement).style.display = 'none';
-								}}
-							/>
-						</div>
-					)}
 
 					<div className='form-group'>
 						<label className='form-label' htmlFor='item-shop'>
