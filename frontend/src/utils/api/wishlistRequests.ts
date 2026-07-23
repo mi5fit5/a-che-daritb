@@ -6,6 +6,7 @@ import type {
 	TUpdateWishlistData,
 	TCreateItemData,
 	TWishlistItem,
+	TUpdateItemData,
 } from '@types';
 
 // Объект с запросами для вишлистов
@@ -58,6 +59,15 @@ export const wishlistRequests = {
 		itemData: TCreateItemData
 	): Promise<TWishlistItem> => {
 		const response = await api.post(`/wishlists/${wishlistId}/items`, itemData);
+		return response.data;
+	},
+
+	// Редактировать элемент вишлиста
+	editItem: async (
+		itemId: string,
+		itemData: TUpdateItemData
+	): Promise<TWishlistItem> => {
+		const response = await api.put(`/items/${itemId}`, itemData);
 		return response.data;
 	},
 

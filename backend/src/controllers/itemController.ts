@@ -50,6 +50,14 @@ export const updateItem = async (
 			return;
 		}
 
+		const isBooked = await Booking.exists({ item: item._id });
+		if (isBooked) {
+			res
+				.status(403)
+				.json({ message: 'Нельзя редактировать забронированную вещь' });
+			return;
+		}
+
 		const { title, image, shopUrl, price, priority } = req.body;
 		if (title !== undefined) item.title = title;
 		if (image !== undefined) item.image = image;

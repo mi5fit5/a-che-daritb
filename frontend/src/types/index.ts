@@ -114,3 +114,6 @@ export type TCreateItemData = {
 	price: number;
 	priority?: TItemPriority;
 };
+
+// Тип данных для редактирования элемента вишлиста
+export type TUpdateItemData = Partial<TCreateItemData>;
