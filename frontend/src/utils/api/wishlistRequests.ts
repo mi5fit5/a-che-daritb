@@ -64,10 +64,14 @@ export const wishlistRequests = {
 
 	// Редактировать элемент вишлиста
 	editItem: async (
+		wishlistId: string,
 		itemId: string,
 		itemData: TUpdateItemData
 	): Promise<TWishlistItem> => {
-		const response = await api.put(`/items/${itemId}`, itemData);
+		const response = await api.put(
+			`/wishlists/${wishlistId}/items/${itemId}`,
+			itemData
+		);
 		return response.data;
 	},
 

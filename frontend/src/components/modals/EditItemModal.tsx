@@ -16,9 +16,12 @@ export const EditItemModal: React.FC<Props> = ({ item, onClose }) => {
 	const [image, setImage] = useState(item.image);
 	const [shopUrl, setShopUrl] = useState(item.shopUrl);
 	const [price, setPrice] = useState(item.price ? item.price.toString() : '');
-	const [priority, setPriority] = useState<TItemPriority>(item.priority || 'fun');
+	const [priority, setPriority] = useState<TItemPriority>(
+		item.priority || 'fun'
+	);
 	const [isSaving, setIsSaving] = useState(false);
 	const [error, setError] = useState('');
+	const [isMouseDownOnOverlay, setIsMouseDownOnOverlay] = useState(false);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -34,7 +37,7 @@ export const EditItemModal: React.FC<Props> = ({ item, onClose }) => {
 		setError('');
 		setIsSaving(true);
 		try {
-			await wishlistRequests.editItem(item._id, {
+			await wishlistRequests.editItem(item.wishlist, item._id, {
 				title,
 				image,
 				shopUrl,
@@ -65,7 +68,13 @@ export const EditItemModal: React.FC<Props> = ({ item, onClose }) => {
 		<div
 			className='modal-overlay'
 			onMouseDown={(e) => {
-				if (e.target === e.currentTarget) onClose();
+				if (e.target === e.currentTarget) setIsMouseDownOnOverlay(true);
+			}}
+			onMouseUp={(e) => {
+				if (isMouseDownOnOverlay && e.target === e.currentTarget) {
+					onClose();
+				}
+				setIsMouseDownOnOverlay(false);
 			}}>
 			<div className='modal'>
 				<div className='modal-header'>

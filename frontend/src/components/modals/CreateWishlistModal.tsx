@@ -14,6 +14,7 @@ export const CreateWishlistModal: React.FC<Props> = ({ onClose }) => {
 	const [isPublic] = useState(true);
 	const [isCreating, setIsCreating] = useState(false);
 	const [error, setError] = useState('');
+	const [isMouseDownOnOverlay, setIsMouseDownOnOverlay] = useState(false);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -50,7 +51,13 @@ export const CreateWishlistModal: React.FC<Props> = ({ onClose }) => {
 		<div
 			className='modal-overlay'
 			onMouseDown={(e) => {
-				if (e.target === e.currentTarget) onClose();
+				if (e.target === e.currentTarget) setIsMouseDownOnOverlay(true);
+			}}
+			onMouseUp={(e) => {
+				if (isMouseDownOnOverlay && e.target === e.currentTarget) {
+					onClose();
+				}
+				setIsMouseDownOnOverlay(false);
 			}}>
 			<div className='modal'>
 				<div className='modal-header'>
