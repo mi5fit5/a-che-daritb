@@ -8,7 +8,7 @@ import bookingRoutes from './routes/bookingRoutes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 app.set('trust proxy', 1);
 
