@@ -1,5 +1,5 @@
 import React, { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from '@store';
 import { login, clearError } from '@slices/authSlice';
 import logoUrl from '../assets/images/logo.svg';
@@ -9,8 +9,11 @@ export const LoginPage: React.FC = () => {
 	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
 	const navigate = useNavigate();
+	const location = useLocation();
 	const dispatch = useDispatch();
 	const { isLoading, error } = useSelector((state) => state.auth);
+
+	const from = (location.state as { from?: string })?.from || '/';
 
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
@@ -18,7 +21,7 @@ export const LoginPage: React.FC = () => {
 
 		try {
 			await dispatch(login({ username, password })).unwrap();
-			navigate('/');
+			navigate(from, { replace: true });
 		} catch {
 			/* */
 		}
@@ -83,7 +86,10 @@ export const LoginPage: React.FC = () => {
 				</form>
 
 				<p className='auth-footer'>
-					Нет аккаунта? <Link to='/register'>Зарегистрироваться</Link>
+					Нет аккаунта?{' '}
+					<Link to='/register' state={{ from }}>
+						Зарегистрироваться
+					</Link>
 				</p>
 			</div>
 		</div>

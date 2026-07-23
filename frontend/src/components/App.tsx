@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import { useSelector, useDispatch } from '@store';
 import { fetchMe } from '@slices/authSlice';
@@ -18,6 +18,7 @@ export const App = () => {
 		(state) => state.auth
 	);
 	const dispatch = useDispatch();
+	const location = useLocation();
 
 	// Проверка сессии при монтировании
 	useEffect(() => {
@@ -28,17 +29,25 @@ export const App = () => {
 		return null;
 	}
 
+	const redirectTo = (location.state as { from?: string })?.from || '/';
+
 	return (
 		<Routes>
 			{/* Публичные маршруты */}
 			<Route
 				path='/login'
-				element={isAuthenticated ? <Navigate to='/' replace /> : <LoginPage />}
+				element={
+					isAuthenticated ? <Navigate to={redirectTo} replace /> : <LoginPage />
+				}
 			/>
 			<Route
 				path='/register'
 				element={
-					isAuthenticated ? <Navigate to='/' replace /> : <RegisterPage />
+					isAuthenticated ? (
+						<Navigate to={redirectTo} replace />
+					) : (
+						<RegisterPage />
+					)
 				}
 			/>
 
