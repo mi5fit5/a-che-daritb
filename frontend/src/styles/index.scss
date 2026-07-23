@@ -555,6 +555,64 @@ img {
 	text-transform: uppercase;
 }
 
+.wishlist-hero-actions {
+	position: absolute;
+	top: var(--space-md);
+	right: var(--space-md);
+	display: flex;
+	align-items: center;
+	gap: var(--space-sm);
+	z-index: 2;
+}
+
+.wishlist-hero-btn {
+	background: rgba(0, 0, 0, 0.5);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	color: #fff;
+	width: 36px;
+	height: 36px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 18px;
+	cursor: pointer;
+	transition: all var(--transition-fast);
+
+	&:hover {
+		background: rgba(255, 255, 255, 0.15);
+		border-color: rgba(255, 255, 255, 0.4);
+		transform: scale(1.1);
+	}
+}
+
+.wishlist-hero-share-wrapper {
+	position: relative;
+}
+
+.wishlist-hero-tooltip {
+	position: absolute;
+	top: calc(100% + 8px);
+	right: 0;
+	background: var(--accent-primary);
+	color: #fff;
+	font-size: var(--font-size-sm);
+	font-weight: 600;
+	padding: 4px 12px;
+	white-space: nowrap;
+	animation: tooltipFadeIn 0.2s ease;
+}
+
+@keyframes tooltipFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-4px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
 .wishlist-actions {
 	display: flex;
 	align-items: center;

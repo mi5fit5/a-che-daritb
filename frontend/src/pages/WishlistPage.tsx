@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from '@store';
 import { fetchWishlistById, deleteWishlist } from '@slices/wishlistSlice';
 import { ItemCard } from '@components/ItemCard';
 import { AddItemModal } from '@components/modals/AddItemModal';
+import { EditWishlistModal } from '@components/modals/EditWishlistModal';
 import { Loader } from '@components/ui/Loader';
 import type { TWishlistItem } from '@types';
 import { PRIORITY_WEIGHT } from '@types';
@@ -48,6 +49,8 @@ export const WishlistPage: React.FC = () => {
 
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [showAddItem, setShowAddItem] = useState(false);
+	const [showEditWishlist, setShowEditWishlist] = useState(false);
+	const [showCopied, setShowCopied] = useState(false);
 	const [sortMode, setSortMode] = useState<SortMode>('default');
 
 	useEffect(() => {
@@ -66,6 +69,14 @@ export const WishlistPage: React.FC = () => {
 			setIsDeleting(false);
 		}
 	};
+
+	const handleShare = useCallback(() => {
+		const url = `${window.location.origin}/wishlist/${id}`;
+		navigator.clipboard.writeText(url).then(() => {
+			setShowCopied(true);
+			setTimeout(() => setShowCopied(false), 2000);
+		});
+	}, [id]);
 
 	const sortedItems = useMemo(() => {
 		if (!wishlist) return [];
@@ -110,6 +121,27 @@ export const WishlistPage: React.FC = () => {
 					}}
 				/>
 				<div className='wishlist-hero-overlay'>
+					<div className='wishlist-hero-actions'>
+						{wishlist.isOwner && (
+							<button
+								className='wishlist-hero-btn'
+								onClick={() => setShowEditWishlist(true)}
+								title='Редактировать вишлист'>
+								✎
+							</button>
+						)}
+						<div className='wishlist-hero-share-wrapper'>
+							<button
+								className='wishlist-hero-btn'
+								onClick={handleShare}
+								title='Поделиться'>
+								🔗
+							</button>
+							{showCopied && (
+								<span className='wishlist-hero-tooltip'>Скопировано!</span>
+							)}
+						</div>
+					</div>
 					<h1 className='wishlist-hero-title'>{wishlist.title}</h1>
 					<div className='wishlist-hero-author'>
 						<div className='wishlist-hero-author-avatar'>{initial}</div>
@@ -183,6 +215,13 @@ export const WishlistPage: React.FC = () => {
 				<AddItemModal
 					wishlistId={wishlist._id}
 					onClose={() => setShowAddItem(false)}
+				/>
+			)}
+
+			{showEditWishlist && (
+				<EditWishlistModal
+					wishlist={wishlist}
+					onClose={() => setShowEditWishlist(false)}
 				/>
 			)}
 		</div>
