@@ -112,15 +112,16 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 				<div className='item-card-actions'>
 					{isOwner ? (
 						<>
-							{item.isBooked && (
-								<span className='item-card-owner-booked'>✓ Забронировано</span>
+							{item.isBooked ? (
+								<span className='item-card-owner-booked'>Забронировано</span>
+							) : (
+								<button
+									className='btn btn-danger btn-sm'
+									onClick={handleDelete}
+									disabled={isDeleting}>
+									{isDeleting ? '...' : 'Удалить'}
+								</button>
 							)}
-							<button
-								className='btn btn-danger btn-sm'
-								onClick={handleDelete}
-								disabled={isDeleting}>
-								{isDeleting ? '...' : 'Удалить'}
-							</button>
 						</>
 					) : (
 						<>
