@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Booking from '../models/Booking';
 import Item from '../models/Item';
 import Wishlist from '../models/Wishlist';
+import { getIO } from '../lib/socket';
 
 // Забронировать вещь
 export const bookItem = async (req: Request, res: Response): Promise<void> => {
@@ -36,6 +37,10 @@ export const bookItem = async (req: Request, res: Response): Promise<void> => {
 			bookedBy: req.user!.userId,
 		});
 
+		getIO()
+			.to(`wishlist:${wishlist._id}`)
+			.emit('wishlist:updated', { wishlistId: wishlist._id.toString() });
+
 		res.status(201).json({
 			message: 'Вещь забронирована',
 			booking: {
@@ -69,6 +74,14 @@ export const unbookItem = async (
 		}
 
 		await Booking.findByIdAndDelete(booking._id);
+
+		const item = await Item.findById(req.params.itemId);
+		if (item) {
+			getIO()
+				.to(`wishlist:${item.wishlist}`)
+				.emit('wishlist:updated', { wishlistId: item.wishlist.toString() });
+		}
+
 		res.json({ message: 'Бронь снята' });
 	} catch (_err) {
 		res.status(500).json({ message: 'Ошибка снятия брони' });

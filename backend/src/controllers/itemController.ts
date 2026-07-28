@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Item from '../models/Item';
 import Wishlist from '../models/Wishlist';
 import Booking from '../models/Booking';
+import { getIO } from '../lib/socket';
 
 // Добавить вещь
 export const addItem = async (req: Request, res: Response): Promise<void> => {
@@ -25,6 +26,10 @@ export const addItem = async (req: Request, res: Response): Promise<void> => {
 			...(price !== undefined && { price }),
 			...(priority !== undefined && { priority }),
 		});
+
+		getIO()
+			.to(`wishlist:${wishlist._id}`)
+			.emit('wishlist:updated', { wishlistId: wishlist._id.toString() });
 
 		res.status(201).json(item);
 	} catch (_err) {
@@ -66,6 +71,11 @@ export const updateItem = async (
 		if (priority !== undefined) item.priority = priority;
 
 		await item.save();
+
+		getIO()
+			.to(`wishlist:${item.wishlist}`)
+			.emit('wishlist:updated', { wishlistId: item.wishlist.toString() });
+
 		res.json(item);
 	} catch (_err) {
 		res.status(500).json({ message: 'Ошибка обновления вещи' });
@@ -92,6 +102,10 @@ export const deleteItem = async (
 
 		await Booking.deleteMany({ item: item._id });
 		await Item.findByIdAndDelete(req.params.id);
+
+		getIO()
+			.to(`wishlist:${item.wishlist}`)
+			.emit('wishlist:updated', { wishlistId: item.wishlist.toString() });
 
 		res.json({ message: 'Вещь удалена' });
 	} catch (_err) {

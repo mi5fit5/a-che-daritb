@@ -7,6 +7,7 @@ import { AddItemModal } from '@components/modals/AddItemModal';
 import { EditWishlistModal } from '@components/modals/EditWishlistModal';
 import { ConfirmModal } from '@components/modals/ConfirmModal';
 import { Loader } from '@components/ui/Loader';
+import { useWishlistSocket } from '@hooks/useWishlistSocket';
 import type { TWishlistItem } from '@types';
 import { PRIORITY_WEIGHT } from '@types';
 
@@ -60,6 +61,8 @@ export const WishlistPage: React.FC = () => {
 			dispatch(fetchWishlistById(id));
 		}
 	}, [id, dispatch]);
+
+	useWishlistSocket(id);
 
 	const handleDelete = async () => {
 		setIsDeleting(true);

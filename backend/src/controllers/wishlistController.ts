@@ -3,6 +3,7 @@ import Wishlist from '../models/Wishlist';
 import Item from '../models/Item';
 import Booking from '../models/Booking';
 import mongoose from 'mongoose';
+import { getIO } from '../lib/socket';
 
 // Публичная лента
 export const getFeed = async (req: Request, res: Response): Promise<void> => {
@@ -210,6 +211,11 @@ export const updateWishlist = async (
 
 		await wishlist.save();
 		const populated = await wishlist.populate('author', 'username');
+
+		getIO()
+			.to(`wishlist:${wishlist._id}`)
+			.emit('wishlist:updated', { wishlistId: wishlist._id.toString() });
+
 		res.json(populated);
 	} catch (_err) {
 		res.status(500).json({ message: 'Ошибка обновления вишлиста' });
@@ -237,6 +243,10 @@ export const deleteWishlist = async (
 		await Booking.deleteMany({ item: { $in: itemIds } });
 		await Item.deleteMany({ wishlist: wishlist._id });
 		await Wishlist.findByIdAndDelete(req.params.id);
+
+		getIO()
+			.to(`wishlist:${wishlist._id}`)
+			.emit('wishlist:updated', { wishlistId: wishlist._id.toString() });
 
 		res.json({ message: 'Вишлист удалён' });
 	} catch (_err) {
