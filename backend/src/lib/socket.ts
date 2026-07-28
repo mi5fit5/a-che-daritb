@@ -6,7 +6,7 @@ let io: Server | null = null;
 export const initSocket = (httpServer: HttpServer): Server => {
 	io = new Server(httpServer, {
 		cors: {
-			origin: process.env.CLIENT_URL || 'http://localhost:5173',
+			origin: true,
 			credentials: true,
 		},
 	});
@@ -26,7 +26,7 @@ export const initSocket = (httpServer: HttpServer): Server => {
 
 export const getIO = (): Server => {
 	if (!io) {
-		throw new Error('Socket.IO not initialized');
+		throw new Error('Socket.IO не инициализирован');
 	}
 	return io;
 };
