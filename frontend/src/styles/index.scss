@@ -110,7 +110,6 @@ body {
 	background: #0f0f12;
 	color: var(--text-primary);
 	line-height: 1.6;
-	overflow: hidden;
 }
 
 body::before {
@@ -180,6 +179,7 @@ img {
 	border: 1px solid rgba(255, 255, 255, 0.05);
 	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 	position: relative;
+	overflow: hidden;
 }
 
 .main-content {
@@ -1023,6 +1023,7 @@ img {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	gap: var(--space-md);
 	margin-bottom: var(--space-xl);
 }
 
@@ -1060,6 +1061,27 @@ img {
 		width: 100%;
 		margin-top: var(--space-sm);
 		padding: 14px;
+	}
+}
+
+// Модалка подтверждения
+.confirm-modal {
+	max-width: 400px;
+}
+
+.confirm-modal-message {
+	color: var(--text-secondary);
+	font-size: var(--font-size-base);
+	line-height: 1.5;
+	margin-bottom: var(--space-xl);
+}
+
+.confirm-modal-actions {
+	display: flex;
+	gap: var(--space-sm);
+
+	.btn {
+		flex: 1;
 	}
 }
 
@@ -1164,12 +1186,157 @@ img {
 	}
 }
 
+// Burger menu (mobile only by default hidden)
+.header-mobile {
+	display: none;
+	position: relative;
+}
+
+.burger-btn {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 5px;
+	width: 36px;
+	height: 36px;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	padding: 6px;
+	z-index: 201;
+}
+
+.burger-line {
+	display: block;
+	width: 22px;
+	height: 2px;
+	background: var(--text-primary);
+	transition: all var(--transition-fast);
+}
+
+.burger-btn.is-open {
+	.burger-line:nth-child(1) {
+		transform: translateY(7px) rotate(45deg);
+	}
+	.burger-line:nth-child(2) {
+		opacity: 0;
+	}
+	.burger-line:nth-child(3) {
+		transform: translateY(-7px) rotate(-45deg);
+	}
+}
+
+.burger-dropdown {
+	position: absolute;
+	top: calc(100% + 12px);
+	right: 0;
+	min-width: 200px;
+	background: var(--bg-primary);
+	border: 2px solid var(--border-accent);
+	box-shadow: 4px 4px 0px var(--border-medium);
+	z-index: 200;
+	display: flex;
+	flex-direction: column;
+	animation: fadeIn var(--transition-fast) ease-out;
+}
+
+.burger-username {
+	padding: var(--space-md) var(--space-lg);
+	font-size: var(--font-size-sm);
+	font-weight: 700;
+	color: var(--text-accent);
+	border-bottom: 1px solid var(--border-subtle);
+}
+
+.burger-link {
+	display: block;
+	padding: var(--space-md) var(--space-lg);
+	font-size: var(--font-size-sm);
+	font-weight: 500;
+	color: var(--text-secondary);
+	text-decoration: none;
+	transition: all var(--transition-fast);
+	background: none;
+	border: none;
+	text-align: left;
+	cursor: pointer;
+	font-family: var(--font-family);
+	width: 100%;
+
+	&:hover,
+	&.active {
+		color: var(--text-primary);
+		background: var(--bg-glass);
+	}
+}
+
+.burger-logout {
+	border-top: 1px solid var(--border-subtle);
+	color: var(--danger);
+
+	&:hover {
+		color: var(--danger);
+		background: var(--danger-bg);
+	}
+}
+
 // Адаптивность
 @media (max-width: 768px) {
+	// Лейаут
+	.app-layout {
+		margin: 0;
+		height: 100vh;
+		border: none;
+		box-shadow: none;
+	}
+
+	// Хедер — бургер
+	.header-nav--desktop,
+	.header-user--desktop {
+		display: none;
+	}
+
+	.header-mobile {
+		display: block;
+		margin-left: auto;
+	}
+
+	.header-inner {
+		padding: 0 var(--space-md);
+		justify-content: space-between;
+	}
+
+	.header-logo {
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	// Контент
+	.main-content {
+		padding: var(--space-lg) var(--space-md);
+	}
+
+	// Wishlist hero
 	.wishlist-hero-title {
 		font-size: var(--font-size-2xl);
 	}
 
+	.wishlist-hero-overlay {
+		padding: var(--space-lg);
+	}
+
+	// Кнопки «Добавить вещь» / «Удалить вишлист» — на всю ширину
+	.wishlist-actions {
+		flex-direction: column;
+
+		.btn {
+			width: 100%;
+		}
+	}
+
+	// Карточки
 	.item-card {
 		flex-direction: column;
 	}
@@ -1179,11 +1346,61 @@ img {
 		height: 200px;
 	}
 
-	.header-inner {
-		padding: 0 var(--space-md);
+	.wishlist-items-list {
+		grid-template-columns: 1fr;
 	}
 
-	.main-content {
-		padding: var(--space-lg) var(--space-md);
+	// Модалки — полноэкранные на мобилке
+	.modal-overlay {
+		padding: 0;
+		align-items: stretch;
+	}
+
+	.modal {
+		max-width: 100%;
+		max-height: 100vh;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		box-shadow: none;
+		border: none;
+		border-radius: 0;
+		overflow: hidden;
+	}
+
+	.modal-header {
+		flex-shrink: 0;
+		gap: var(--space-md);
+	}
+
+	.modal-form {
+		flex: 1;
+		overflow-y: auto;
+		padding-bottom: var(--space-lg);
+		padding-right: var(--space-sm);
+	}
+
+	// Авторизация — не обрезать
+	.auth-page {
+		min-height: 100vh;
+		padding: var(--space-md);
+		align-items: flex-start;
+		padding-top: var(--space-3xl);
+	}
+
+	.auth-card {
+		box-shadow: none;
+		border: 2px solid var(--border-medium);
+		max-width: 100%;
+	}
+
+	// Сортировка
+	.sort-controls {
+		gap: var(--space-xs);
+	}
+
+	.sort-btn {
+		font-size: 11px;
+		padding: 5px 10px;
 	}
 }

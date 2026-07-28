@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import logoUrl from '../assets/images/logo.svg';
 import { useSelector, useDispatch } from '@store';
@@ -9,11 +9,26 @@ export const Layout: React.FC = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
+	const [burgerOpen, setBurgerOpen] = useState(false);
+	const burgerRef = useRef<HTMLDivElement>(null);
 
 	const handleLogout = async () => {
+		setBurgerOpen(false);
 		await dispatch(logout()).unwrap();
 		navigate('/login');
 	};
+
+	useEffect(() => {
+		const handleClickOutside = (e: MouseEvent) => {
+			if (burgerRef.current && !burgerRef.current.contains(e.target as Node)) {
+				setBurgerOpen(false);
+			}
+		};
+		if (burgerOpen) {
+			document.addEventListener('mousedown', handleClickOutside);
+		}
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, [burgerOpen]);
 
 	return (
 		<div className='app-layout'>
@@ -23,7 +38,7 @@ export const Layout: React.FC = () => {
 						<img src={logoUrl} alt='а чё дарить ?' style={{ height: '32px' }} />
 					</Link>
 
-					<nav className='header-nav'>
+					<nav className='header-nav header-nav--desktop'>
 						<Link
 							to='/'
 							className={`header-nav-link ${location.pathname === '/' ? 'active' : ''}`}>
@@ -36,11 +51,47 @@ export const Layout: React.FC = () => {
 						</Link>
 					</nav>
 
-					<div className='header-user'>
+					<div className='header-user header-user--desktop'>
 						{user && <span className='header-username'>@{user.username}</span>}
 						<button className='btn btn-ghost btn-sm' onClick={handleLogout}>
 							Выйти
 						</button>
+					</div>
+
+					<div className='header-mobile' ref={burgerRef}>
+						<button
+							className={`burger-btn ${burgerOpen ? 'is-open' : ''}`}
+							onClick={() => setBurgerOpen(!burgerOpen)}
+							aria-label='Меню'>
+							<span className='burger-line' />
+							<span className='burger-line' />
+							<span className='burger-line' />
+						</button>
+
+						{burgerOpen && (
+							<div className='burger-dropdown'>
+								{user && (
+									<div className='burger-username'>@{user.username}</div>
+								)}
+								<Link
+									to='/'
+									className={`burger-link ${location.pathname === '/' ? 'active' : ''}`}
+									onClick={() => setBurgerOpen(false)}>
+									Лента
+								</Link>
+								<Link
+									to='/my'
+									className={`burger-link ${location.pathname === '/my' ? 'active' : ''}`}
+									onClick={() => setBurgerOpen(false)}>
+									Мои вишлисты
+								</Link>
+								<button
+									className='burger-link burger-logout'
+									onClick={handleLogout}>
+									Выйти
+								</button>
+							</div>
+						)}
 					</div>
 				</div>
 			</header>
