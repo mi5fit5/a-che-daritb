@@ -5,6 +5,7 @@ import { PRIORITY_WEIGHT } from '@types';
 import { useDispatch } from '@store';
 import { fetchWishlistById } from '@slices/wishlistSlice';
 import { EditItemModal } from './modals/EditItemModal';
+import { ConfirmModal } from './modals/ConfirmModal';
 
 interface Props {
 	item: TWishlistItem;
@@ -22,6 +23,7 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 	const [isBooking, setIsBooking] = useState(false);
 	const [isUnbooking, setIsUnbooking] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
 	const handleBook = async () => {
 		setIsBooking(true);
@@ -48,7 +50,6 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 	};
 
 	const handleDelete = async () => {
-		if (!confirm('Удалить эту вещь?')) return;
 		setIsDeleting(true);
 		try {
 			await wishlistRequests.deleteItem(wishlistId, item._id);
@@ -57,6 +58,7 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 			console.error(error);
 		} finally {
 			setIsDeleting(false);
+			setShowDeleteConfirm(false);
 		}
 	};
 
@@ -130,7 +132,7 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 								) : (
 									<button
 										className='btn btn-danger btn-sm'
-										onClick={handleDelete}
+										onClick={() => setShowDeleteConfirm(true)}
 										disabled={isDeleting}>
 										{isDeleting ? '...' : 'Удалить'}
 									</button>
@@ -168,6 +170,17 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 
 			{isEditing && (
 				<EditItemModal item={item} onClose={() => setIsEditing(false)} />
+			)}
+
+			{showDeleteConfirm && (
+				<ConfirmModal
+					title='Удалить вещь'
+					message={`Удалить «${item.title}»?`}
+					confirmText='Удалить'
+					variant='danger'
+					onConfirm={handleDelete}
+					onCancel={() => setShowDeleteConfirm(false)}
+				/>
 			)}
 		</>
 	);

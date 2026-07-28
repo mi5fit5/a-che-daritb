@@ -5,6 +5,7 @@ import { fetchWishlistById, deleteWishlist } from '@slices/wishlistSlice';
 import { ItemCard } from '@components/ItemCard';
 import { AddItemModal } from '@components/modals/AddItemModal';
 import { EditWishlistModal } from '@components/modals/EditWishlistModal';
+import { ConfirmModal } from '@components/modals/ConfirmModal';
 import { Loader } from '@components/ui/Loader';
 import type { TWishlistItem } from '@types';
 import { PRIORITY_WEIGHT } from '@types';
@@ -50,6 +51,7 @@ export const WishlistPage: React.FC = () => {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [showAddItem, setShowAddItem] = useState(false);
 	const [showEditWishlist, setShowEditWishlist] = useState(false);
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 	const [showCopied, setShowCopied] = useState(false);
 	const [sortMode, setSortMode] = useState<SortMode>('default');
 
@@ -60,13 +62,13 @@ export const WishlistPage: React.FC = () => {
 	}, [id, dispatch]);
 
 	const handleDelete = async () => {
-		if (!confirm('Удалить этот вишлист и все его вещи?')) return;
 		setIsDeleting(true);
 		try {
 			await dispatch(deleteWishlist(id!)).unwrap();
 			navigate('/my');
 		} catch {
 			setIsDeleting(false);
+			setShowDeleteConfirm(false);
 		}
 	};
 
@@ -83,7 +85,6 @@ export const WishlistPage: React.FC = () => {
 		return sortItems(wishlist.items, sortMode);
 	}, [wishlist, sortMode]);
 
-	// Показываем лоадер только при первоначальной загрузке (нет данных)
 	if (isLoading && !wishlist) return <Loader />;
 
 	if (error || !wishlist) {
@@ -160,7 +161,7 @@ export const WishlistPage: React.FC = () => {
 					</button>
 					<button
 						className='btn btn-danger'
-						onClick={handleDelete}
+						onClick={() => setShowDeleteConfirm(true)}
 						disabled={isDeleting}>
 						{isDeleting ? 'Удаление...' : 'Удалить вишлист'}
 					</button>
@@ -222,6 +223,17 @@ export const WishlistPage: React.FC = () => {
 				<EditWishlistModal
 					wishlist={wishlist}
 					onClose={() => setShowEditWishlist(false)}
+				/>
+			)}
+
+			{showDeleteConfirm && (
+				<ConfirmModal
+					title='Удалить вишлист'
+					message='Удалить этот вишлист и все его вещи? Это действие необратимо.'
+					confirmText='Удалить'
+					variant='danger'
+					onConfirm={handleDelete}
+					onCancel={() => setShowDeleteConfirm(false)}
 				/>
 			)}
 		</div>
