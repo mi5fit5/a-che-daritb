@@ -1,6 +1,6 @@
 {
-  "name": "а чё дарить?",
-  "short_name": "а чё дарить?",
+  "name": "MyWebSite",
+  "short_name": "MySite",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
