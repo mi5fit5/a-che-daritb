@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { clsx } from 'clsx';
+
 import { useDispatch, useSelector } from '@store';
 import { fetchWishlistById, deleteWishlist } from '@slices/wishlistSlice';
-import { ItemCard } from '@components/ItemCard';
-import { AddItemModal } from '@components/modals/AddItemModal';
-import { EditWishlistModal } from '@components/modals/EditWishlistModal';
-import { ConfirmModal } from '@components/modals/ConfirmModal';
-import { Loader } from '@components/ui/Loader';
 import { useWishlistSocket } from '@hooks/useWishlistSocket';
 import type { TWishlistItem } from '@types';
 import { PRIORITY_WEIGHT } from '@types';
+
+import { ItemCard } from '@items';
+import { AddItemModal, EditWishlistModal, ConfirmModal } from '@modals';
+import { Loader, Button } from '@ui';
+
+import styles from './WishlistPage.module.scss';
 
 type SortMode = 'default' | 'price-asc' | 'price-desc' | 'priority';
 
@@ -92,8 +95,8 @@ export const WishlistPage: React.FC = () => {
 
 	if (error || !wishlist) {
 		return (
-			<div className='empty-state'>
-				<h2 className='empty-state-title'>Вишлист не найден</h2>
+			<div className={styles.emptyState}>
+				<h2 className={styles.emptyStateTitle}>Вишлист не найден</h2>
 				<Link
 					to='/'
 					className='btn btn-secondary'
@@ -109,14 +112,14 @@ export const WishlistPage: React.FC = () => {
 	const initial = authorName.charAt(0).toUpperCase();
 
 	return (
-		<div className='wishlist-detail'>
-			<Link to='/' className='back-link'>
+		<div className={styles.detail}>
+			<Link to='/' className={styles.backLink}>
 				← Назад к ленте
 			</Link>
 
-			<div className='wishlist-hero'>
+			<div className={styles.hero}>
 				<img
-					className='wishlist-hero-image'
+					className={styles.heroImage}
 					src={wishlist.coverImage}
 					alt={wishlist.title}
 					onError={(e) => {
@@ -124,68 +127,69 @@ export const WishlistPage: React.FC = () => {
 							'https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=1200&q=80';
 					}}
 				/>
-				<div className='wishlist-hero-overlay'>
-					<div className='wishlist-hero-actions'>
+				<div className={styles.heroOverlay}>
+					<div className={styles.heroActions}>
 						{wishlist.isOwner && (
 							<button
-								className='wishlist-hero-btn'
+								className={styles.heroBtn}
 								onClick={() => setShowEditWishlist(true)}
 								title='Редактировать вишлист'>
 								✎
 							</button>
 						)}
-						<div className='wishlist-hero-share-wrapper'>
+						<div className={styles.heroShareWrapper}>
 							<button
-								className='wishlist-hero-btn'
+								className={styles.heroBtn}
 								onClick={handleShare}
 								title='Поделиться'>
 								🔗
 							</button>
 							{showCopied && (
-								<span className='wishlist-hero-tooltip'>Скопировано!</span>
+								<span className={styles.heroTooltip}>Скопировано!</span>
 							)}
 						</div>
 					</div>
-					<h1 className='wishlist-hero-title'>{wishlist.title}</h1>
-					<div className='wishlist-hero-author'>
-						<div className='wishlist-hero-author-avatar'>{initial}</div>
+					<h1 className={styles.heroTitle}>{wishlist.title}</h1>
+					<div className={styles.heroAuthor}>
+						<div className={styles.heroAuthorAvatar}>{initial}</div>
 						<span>@{authorName}</span>
 					</div>
 				</div>
 			</div>
 
 			{wishlist.isOwner && (
-				<div className='wishlist-actions'>
-					<button
-						className='btn btn-primary'
+				<div className={styles.actions}>
+					<Button
+						variant='primary'
 						onClick={() => setShowAddItem(true)}
 						id='add-item-btn'>
 						Добавить вещь
-					</button>
-					<button
-						className='btn btn-danger'
+					</Button>
+					<Button
+						variant='danger'
 						onClick={() => setShowDeleteConfirm(true)}
 						disabled={isDeleting}>
 						{isDeleting ? 'Удаление...' : 'Удалить вишлист'}
-					</button>
+					</Button>
 				</div>
 			)}
 
-			<div className='wishlist-items-header'>
-				<h2 className='wishlist-items-title'>Список желаний</h2>
-				<span className='wishlist-items-count'>
-					{wishlist.items.length} вещей
-				</span>
+			<div className={styles.itemsHeader}>
+				<h2 className={styles.itemsTitle}>Список желаний</h2>
+				<span className={styles.itemsCount}>{wishlist.items.length} вещей</span>
 			</div>
 
 			{wishlist.items.length > 0 && (
 				<div
-					className='sort-controls'
+					className={styles.sortControls}
 					style={{ marginBottom: 'var(--space-lg)' }}>
 					{SORT_OPTIONS.map((opt) => (
 						<button
 							key={opt.value}
-							className={`sort-btn ${sortMode === opt.value ? 'active' : ''}`}
+							className={clsx(
+								styles.sortBtn,
+								sortMode === opt.value && styles.sortBtnActive
+							)}
 							onClick={() => setSortMode(opt.value)}>
 							{opt.label}
 						</button>
@@ -194,16 +198,16 @@ export const WishlistPage: React.FC = () => {
 			)}
 
 			{wishlist.items.length === 0 ? (
-				<div className='empty-state'>
-					<h2 className='empty-state-title'>Список пуст</h2>
-					<p className='empty-state-text'>
+				<div className={styles.emptyState}>
+					<h2 className={styles.emptyStateTitle}>Список пуст</h2>
+					<p className={styles.emptyStateText}>
 						{wishlist.isOwner
 							? 'Добавьте свою первую желаемую вещь!'
 							: 'Автор ещё не добавил вещей'}
 					</p>
 				</div>
 			) : (
-				<div className='wishlist-items-list'>
+				<div className={styles.itemsList}>
 					{sortedItems.map((item: TWishlistItem) => (
 						<ItemCard
 							key={item._id}

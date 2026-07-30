@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
+import { clsx } from 'clsx';
+
 import { wishlistRequests } from '@utils-api/wishlistRequests';
 import type { TWishlistItem, TItemPriority } from '@types';
 import { PRIORITY_WEIGHT } from '@types';
 import { useDispatch } from '@store';
 import { fetchWishlistById } from '@slices/wishlistSlice';
-import { EditItemModal } from './modals/EditItemModal';
-import { ConfirmModal } from './modals/ConfirmModal';
+
+import { Button } from '@ui';
+import { EditItemModal, ConfirmModal } from '@modals';
+
+import styles from './ItemCard.module.scss';
 
 interface Props {
 	item: TWishlistItem;
@@ -72,11 +77,11 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 	const renderStars = (priority?: TItemPriority) => {
 		const weight = priority ? PRIORITY_WEIGHT[priority] : 1;
 		return (
-			<div className='item-card-stars'>
+			<div className={styles.stars}>
 				{[1, 2, 3, 4, 5].map((star) => (
 					<span
 						key={star}
-						className={`star ${star <= weight ? 'filled' : 'empty'}`}>
+						className={star <= weight ? styles.starFilled : styles.starEmpty}>
 						★
 					</span>
 				))}
@@ -86,12 +91,12 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 
 	return (
 		<>
-			<div className={`item-card ${item.isBooked ? 'is-booked' : ''}`}>
-				<div className='item-card-top-bar'>
+			<div className={clsx(styles.card, item.isBooked && styles.isBooked)}>
+				<div className={styles.topBar}>
 					{renderStars(item.priority)}
 					{isOwner && !item.isBooked && (
 						<button
-							className='item-card-edit-btn'
+							className={styles.editBtn}
 							onClick={() => setIsEditing(true)}
 							title='Редактировать'>
 							✎
@@ -100,7 +105,7 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 				</div>
 
 				<img
-					className='item-card-image'
+					className={styles.image}
 					src={item.image}
 					alt={item.title}
 					onError={(e) => {
@@ -109,58 +114,62 @@ export const ItemCard: React.FC<Props> = ({ item, wishlistId, isOwner }) => {
 					}}
 				/>
 
-				<div className='item-card-body'>
+				<div className={styles.body}>
 					{item.price != null && item.price > 0 && (
-						<span className='item-card-price'>{formatPrice(item.price)}</span>
+						<span className={styles.price}>{formatPrice(item.price)}</span>
 					)}
 
-					<h4 className='item-card-title'>{item.title}</h4>
+					<h4 className={styles.title}>{item.title}</h4>
 
 					<a
-						className='item-card-link'
+						className={styles.link}
 						href={item.shopUrl}
 						target='_blank'
 						rel='noopener noreferrer'>
 						🔗 {shopDomain}
 					</a>
 
-					<div className='item-card-actions'>
+					<div className={styles.actions}>
 						{isOwner ? (
 							<>
 								{item.isBooked ? (
-									<span className='item-card-owner-booked'>Забронировано</span>
+									<span className={styles.ownerBooked}>Забронировано</span>
 								) : (
-									<button
-										className='btn btn-danger btn-sm'
+									<Button
+										variant='danger'
+										size='sm'
 										onClick={() => setShowDeleteConfirm(true)}
 										disabled={isDeleting}>
 										{isDeleting ? '...' : 'Удалить'}
-									</button>
+									</Button>
 								)}
 							</>
 						) : (
 							<>
 								{item.isBookedByMe ? (
-									<button
-										className='btn btn-outline-warning btn-sm'
+									<Button
+										variant='outlineWarning'
+										size='sm'
 										onClick={handleUnbook}
 										disabled={isUnbooking}
 										style={{ width: '100%' }}>
 										{isUnbooking ? '...' : 'Снять бронь'}
-									</button>
+									</Button>
 								) : item.isBooked ? (
 									<span
-										className='item-card-status booked'
+										className={clsx(styles.status, styles.statusBooked)}
 										style={{ width: '100%', justifyContent: 'center' }}>
 										Забронировано
 									</span>
 								) : (
-									<button
-										className='btn btn-outline-primary btn-sm'
+									<Button
+										variant='outlinePrimary'
+										size='sm'
+										className={styles.bookBtn}
 										onClick={handleBook}
 										disabled={isBooking}>
 										{isBooking ? '...' : 'Забронировать'}
-									</button>
+									</Button>
 								)}
 							</>
 						)}

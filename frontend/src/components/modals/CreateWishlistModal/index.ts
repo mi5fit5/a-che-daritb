@@ -1,0 +1,1 @@
+export { CreateWishlistModal } from './CreateWishlistModal';

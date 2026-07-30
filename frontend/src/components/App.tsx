@@ -4,13 +4,14 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from '@store';
 import { fetchMe } from '@slices/authSlice';
 
-import { Layout } from '@components/Layout';
-import { ProtectedRoute } from '@components/navigation/ProtectedRoute';
-import { LoginPage } from '@pages/LoginPage';
-import { RegisterPage } from '@pages/RegisterPage';
-import { FeedPage } from '@pages/FeedPage';
-import { WishlistPage } from '@pages/WishlistPage';
-import { MyWishlistsPage } from '@pages/MyWishlistsPage';
+import { Layout, ProtectedRoute } from '@components';
+import {
+	LoginPage,
+	RegisterPage,
+	FeedPage,
+	WishlistPage,
+	MyWishlistsPage,
+} from '@pages';
 
 // Корневой компонент приложения
 export const App = () => {

@@ -1,0 +1,19 @@
+.confirmModal {
+	max-width: 400px;
+}
+
+.message {
+	color: var(--text-secondary);
+	font-size: var(--font-size-base);
+	line-height: 1.5;
+	margin-bottom: var(--space-xl);
+}
+
+.actions {
+	display: flex;
+	gap: var(--space-sm);
+
+	> button {
+		flex: 1;
+	}
+}

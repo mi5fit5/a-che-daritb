@@ -1,8 +1,13 @@
 import React, { useState, type FormEvent } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+
 import { useDispatch, useSelector } from '@store';
 import { login, clearError } from '@slices/authSlice';
-import logoUrl from '../assets/images/logo.svg';
+
+import logoUrl from '@assets/images/logo.svg';
+import { FormGroup, FormLabel, FormInput, PasswordInput, Button } from '@ui';
+
+import styles from './LoginPage.module.scss';
 
 export const LoginPage: React.FC = () => {
 	const [username, setUsername] = useState('');
@@ -28,23 +33,20 @@ export const LoginPage: React.FC = () => {
 	};
 
 	return (
-		<div className='auth-page'>
-			<div className='auth-card'>
-				<h1 className='auth-title'>
+		<div className={styles.page}>
+			<div className={styles.card}>
+				<h1 className={styles.title}>
 					<img src={logoUrl} alt='А чё дарить?' style={{ height: '32px' }} />
 				</h1>
-				<p className='auth-subtitle'>Войдите, чтобы продолжить</p>
+				<p className={styles.subtitle}>Войдите, чтобы продолжить</p>
 
-				{error && <div className='auth-error'>{error}</div>}
+				{error && <div className={styles.error}>{error}</div>}
 
-				<form className='auth-form' onSubmit={handleSubmit}>
-					<div className='form-group'>
-						<label className='form-label' htmlFor='login-username'>
-							Имя пользователя
-						</label>
-						<input
+				<form className={styles.form} onSubmit={handleSubmit}>
+					<FormGroup>
+						<FormLabel htmlFor='login-username'>Имя пользователя</FormLabel>
+						<FormInput
 							id='login-username'
-							className='form-input'
 							type='text'
 							placeholder='Введите имя'
 							value={username}
@@ -52,40 +54,31 @@ export const LoginPage: React.FC = () => {
 							required
 							autoFocus
 						/>
-					</div>
+					</FormGroup>
 
-					<div className='form-group'>
-						<label className='form-label' htmlFor='login-password'>
-							Пароль
-						</label>
-						<div className='password-wrapper'>
-							<input
-								id='login-password'
-								className='form-input'
-								type={showPassword ? 'text' : 'password'}
-								placeholder='Введите пароль'
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								required
-							/>
-							<button
-								type='button'
-								className={`password-toggle ${showPassword ? 'is-visible' : ''}`}
-								onClick={() => setShowPassword(!showPassword)}
-								aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
-							/>
-						</div>
-					</div>
+					<FormGroup>
+						<FormLabel htmlFor='login-password'>Пароль</FormLabel>
+						<PasswordInput
+							id='login-password'
+							placeholder='Введите пароль'
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							showPassword={showPassword}
+							onTogglePassword={() => setShowPassword(!showPassword)}
+							required
+						/>
+					</FormGroup>
 
-					<button
-						className='btn btn-primary'
+					<Button
+						variant='primary'
 						type='submit'
-						disabled={isLoading}>
+						disabled={isLoading}
+						className={styles.submitBtn}>
 						{isLoading ? 'Вход...' : 'Войти'}
-					</button>
+					</Button>
 				</form>
 
-				<p className='auth-footer'>
+				<p className={styles.footer}>
 					Нет аккаунта?{' '}
 					<Link to='/register' state={{ from }}>
 						Зарегистрироваться

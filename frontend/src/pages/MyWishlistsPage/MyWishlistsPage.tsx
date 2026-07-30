@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
+
 import { useDispatch, useSelector } from '@store';
 import { fetchMyWishlists } from '@slices/wishlistSlice';
-import { WishlistCard } from '@components/items/WishlistCard';
-import { Loader } from '@components/ui/Loader';
-import { CreateWishlistModal } from '@components/modals/CreateWishlistModal';
+
+import { WishlistCard } from '@items';
+import { Loader, Button } from '@ui';
+import { CreateWishlistModal } from '@modals';
+
 import styles from './MyWishlistsPage.module.scss';
 
 export const MyWishlistsPage: React.FC = () => {
@@ -19,11 +22,9 @@ export const MyWishlistsPage: React.FC = () => {
 		<>
 			<div className={styles.header}>
 				<h1 className={styles.title}>Мои вишлисты</h1>
-				<button
-					className='btn btn-primary'
-					onClick={() => setShowCreateModal(true)}>
+				<Button variant='primary' onClick={() => setShowCreateModal(true)}>
 					Создать вишлист
-				</button>
+				</Button>
 			</div>
 
 			{isLoading ? (
@@ -34,12 +35,12 @@ export const MyWishlistsPage: React.FC = () => {
 					<p className={styles.emptyStateText}>
 						Создайте свой первый список желаний!
 					</p>
-					<button
-						className='btn btn-primary'
+					<Button
+						variant='primary'
 						style={{ marginTop: '1rem' }}
 						onClick={() => setShowCreateModal(true)}>
 						Создать
-					</button>
+					</Button>
 				</div>
 			) : (
 				<div className={styles.grid}>

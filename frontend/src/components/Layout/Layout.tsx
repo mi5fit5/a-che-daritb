@@ -1,8 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
-import logoUrl from '../assets/images/logo.svg';
+import { clsx } from 'clsx';
+
 import { useSelector, useDispatch } from '@store';
 import { logout } from '@slices/authSlice';
+
+import logoUrl from '@assets/images/logo.svg';
+import { Button } from '@ui';
+
+import styles from './Layout.module.scss';
 
 export const Layout: React.FC = () => {
 	const { user } = useSelector((state) => state.auth);
@@ -31,62 +37,79 @@ export const Layout: React.FC = () => {
 	}, [burgerOpen]);
 
 	return (
-		<div className='app-layout'>
-			<header className='header'>
-				<div className='header-inner'>
-					<Link to='/' className='header-logo'>
+		<div className={styles.appLayout}>
+			<header className={styles.header}>
+				<div className={styles.headerInner}>
+					<Link to='/' className={styles.headerLogo}>
 						<img src={logoUrl} alt='а чё дарить ?' style={{ height: '32px' }} />
 					</Link>
 
-					<nav className='header-nav header-nav--desktop'>
+					<nav className={clsx(styles.headerNav, styles.headerNavDesktop)}>
 						<Link
 							to='/'
-							className={`header-nav-link ${location.pathname === '/' ? 'active' : ''}`}>
+							className={clsx(
+								styles.headerNavLink,
+								location.pathname === '/' && styles.active
+							)}>
 							Лента
 						</Link>
 						<Link
 							to='/my'
-							className={`header-nav-link ${location.pathname === '/my' ? 'active' : ''}`}>
+							className={clsx(
+								styles.headerNavLink,
+								location.pathname === '/my' && styles.active
+							)}>
 							Мои вишлисты
 						</Link>
 					</nav>
 
-					<div className='header-user header-user--desktop'>
-						{user && <span className='header-username'>@{user.username}</span>}
-						<button className='btn btn-ghost btn-sm' onClick={handleLogout}>
+					<div className={clsx(styles.headerUser, styles.headerUserDesktop)}>
+						{user && (
+							<span className={styles.headerUsername}>@{user.username}</span>
+						)}
+						<Button variant='ghost' size='sm' onClick={handleLogout}>
 							Выйти
-						</button>
+						</Button>
 					</div>
 
-					<div className='header-mobile' ref={burgerRef}>
+					<div className={styles.headerMobile} ref={burgerRef}>
 						<button
-							className={`burger-btn ${burgerOpen ? 'is-open' : ''}`}
+							className={clsx(
+								styles.burgerBtn,
+								burgerOpen && styles.burgerBtnOpen
+							)}
 							onClick={() => setBurgerOpen(!burgerOpen)}
 							aria-label='Меню'>
-							<span className='burger-line' />
-							<span className='burger-line' />
-							<span className='burger-line' />
+							<span className={styles.burgerLine} />
+							<span className={styles.burgerLine} />
+							<span className={styles.burgerLine} />
 						</button>
 
 						{burgerOpen && (
-							<div className='burger-dropdown'>
+							<div className={styles.burgerDropdown}>
 								{user && (
-									<div className='burger-username'>@{user.username}</div>
+									<div className={styles.burgerUsername}>@{user.username}</div>
 								)}
 								<Link
 									to='/'
-									className={`burger-link ${location.pathname === '/' ? 'active' : ''}`}
+									className={clsx(
+										styles.burgerLink,
+										location.pathname === '/' && styles.active
+									)}
 									onClick={() => setBurgerOpen(false)}>
 									Лента
 								</Link>
 								<Link
 									to='/my'
-									className={`burger-link ${location.pathname === '/my' ? 'active' : ''}`}
+									className={clsx(
+										styles.burgerLink,
+										location.pathname === '/my' && styles.active
+									)}
 									onClick={() => setBurgerOpen(false)}>
 									Мои вишлисты
 								</Link>
 								<button
-									className='burger-link burger-logout'
+									className={clsx(styles.burgerLink, styles.burgerLogout)}
 									onClick={handleLogout}>
 									Выйти
 								</button>
@@ -96,7 +119,7 @@ export const Layout: React.FC = () => {
 				</div>
 			</header>
 
-			<main className='main-content'>
+			<main className={styles.mainContent}>
 				<Outlet />
 			</main>
 		</div>

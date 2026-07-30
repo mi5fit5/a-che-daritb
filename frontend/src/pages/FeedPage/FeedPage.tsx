@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
+
 import { useDispatch, useSelector } from '@store';
 import { fetchFeed } from '@slices/wishlistSlice';
 import { useDebounce } from '@hooks/useDebounce';
 
-import { WishlistCard } from '@components/items/WishlistCard';
-import { Loader } from '@components/ui/Loader';
+import { WishlistCard } from '@items';
+import { Loader, Button, FormInput } from '@ui';
 
 import styles from './FeedPage.module.scss';
 
@@ -20,12 +21,10 @@ export const FeedPage = () => {
 
 	const [isFetchingMore, setIsFetchingMore] = useState(false);
 
-	// Загрузка ленты при изменении поискового запроса
 	useEffect(() => {
 		dispatch(fetchFeed({ search: debouncedSearch }));
 	}, [debouncedSearch, dispatch]);
 
-	// Подгрузка следующей страницы
 	const loadMore = async () => {
 		if (hasNextPage && nextCursor && !isFetchingMore) {
 			setIsFetchingMore(true);
@@ -41,9 +40,8 @@ export const FeedPage = () => {
 			<div className={styles.header}>
 				<h1 className={styles.title}>Глобальная лента</h1>
 				<div className={styles.search}>
-					<input
+					<FormInput
 						type='text'
-						className='form-input'
 						placeholder='Поиск по названию...'
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
@@ -61,12 +59,12 @@ export const FeedPage = () => {
 
 			{hasNextPage && !isLoading && (
 				<div className={styles.loadMoreWrapper}>
-					<button
-						className='btn btn-secondary'
+					<Button
+						variant='secondary'
 						onClick={loadMore}
 						disabled={isFetchingMore}>
 						{isFetchingMore ? 'Загрузка...' : 'Загрузить еще'}
-					</button>
+					</Button>
 				</div>
 			)}
 

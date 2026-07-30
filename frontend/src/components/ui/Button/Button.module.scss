@@ -1,0 +1,128 @@
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-sm);
+	padding: 10px 20px;
+	border: none;
+	border-radius: var(--radius-sm);
+	font-family: var(--font-family);
+	font-size: var(--font-size-sm);
+	font-weight: 600;
+	cursor: pointer;
+	transition: all var(--transition-base);
+	white-space: nowrap;
+	text-decoration: none;
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+		transform: none !important;
+	}
+}
+
+.primary {
+	background: var(--accent-primary);
+	color: #121214;
+	font-weight: 800;
+	text-transform: uppercase;
+	border: 2px solid var(--accent-primary);
+
+	&:hover {
+		background: #121214;
+		color: var(--accent-primary);
+	}
+
+	&:active {
+		transform: translateY(0);
+	}
+}
+
+.secondary {
+	background: transparent;
+	color: var(--text-primary);
+	border: 2px solid var(--border-medium);
+	text-transform: uppercase;
+	font-weight: 800;
+
+	&:hover {
+		background: var(--text-primary);
+		color: #121214;
+		border-color: var(--text-primary);
+	}
+}
+
+.danger {
+	background: transparent;
+	color: var(--danger);
+	border: 2px solid var(--danger);
+	text-transform: uppercase;
+	font-weight: 800;
+
+	&:hover {
+		background: var(--danger);
+		color: #1a1a1c;
+	}
+}
+
+.warning {
+	background: transparent;
+	color: var(--warning);
+	border: 2px solid var(--warning);
+	text-transform: uppercase;
+	font-weight: 800;
+
+	&:hover {
+		background: var(--warning);
+		color: #1a1a1c;
+	}
+}
+
+.outlinePrimary {
+	background: var(--accent-primary);
+	color: #121214;
+	border: 2px solid var(--accent-primary);
+	text-transform: uppercase;
+	font-weight: 800;
+
+	&:hover {
+		background: transparent;
+		color: var(--accent-primary);
+	}
+}
+
+.outlineWarning {
+	background: transparent;
+	color: var(--warning);
+	border: 2px solid var(--warning);
+	text-transform: uppercase;
+	font-weight: 800;
+
+	&:hover {
+		background: var(--warning);
+		color: #121214;
+	}
+}
+
+.ghost {
+	background: transparent;
+	color: var(--text-secondary);
+	padding: var(--space-sm) var(--space-md);
+
+	&:hover {
+		background: var(--bg-glass);
+		color: var(--text-primary);
+	}
+}
+
+.sm {
+	padding: 6px 14px;
+	font-size: var(--font-size-xs);
+}
+
+.icon {
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	border-radius: var(--radius-sm);
+}

@@ -1,7 +1,9 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+
 import { useSelector } from '@store';
-import { Loader } from '@components/ui/Loader';
+
+import { Loader } from '@ui';
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 	const { isAuthenticated, isLoading } = useSelector((state) => state.auth);

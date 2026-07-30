@@ -1,0 +1,217 @@
+.appLayout {
+	display: flex;
+	flex-direction: column;
+	height: calc(100vh - 40px);
+	max-width: 1320px;
+	margin: 20px auto;
+	background: rgba(15, 15, 18, 0.5);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	border: 1px solid rgba(255, 255, 255, 0.05);
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+	position: relative;
+	overflow: hidden;
+}
+
+.mainContent {
+	flex: 1;
+	width: 100%;
+	padding: var(--space-xl) var(--space-lg);
+	overflow-y: auto;
+}
+
+.header {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	background: rgba(0, 0, 0, 0.85);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	border-bottom: 2px solid var(--border-accent);
+}
+
+.headerInner {
+	max-width: 1280px;
+	margin: 0 auto;
+	padding: 0 var(--space-lg);
+	height: 64px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.headerLogo {
+	display: flex;
+	align-items: center;
+	gap: var(--space-sm);
+	font-weight: 700;
+	font-size: var(--font-size-xl);
+	color: var(--text-primary);
+	text-decoration: none;
+
+	span {
+		color: var(--text-accent);
+	}
+}
+
+.headerNav {
+	display: flex;
+	align-items: center;
+	gap: var(--space-sm);
+}
+
+.headerNavLink {
+	padding: var(--space-sm) var(--space-md);
+	border-radius: var(--radius-sm);
+	font-size: var(--font-size-sm);
+	font-weight: 500;
+	color: var(--text-secondary);
+	transition: all var(--transition-fast);
+	text-decoration: none;
+
+	&:hover,
+	&.active {
+		color: var(--text-primary);
+		background: var(--bg-glass);
+	}
+}
+
+.headerUser {
+	display: flex;
+	align-items: center;
+	gap: var(--space-md);
+}
+
+.headerUsername {
+	font-size: var(--font-size-sm);
+	color: var(--text-secondary);
+	font-weight: 500;
+}
+
+.headerMobile {
+	display: none;
+	position: relative;
+}
+
+.burgerBtn {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 5px;
+	width: 36px;
+	height: 36px;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	padding: 6px;
+	z-index: 201;
+}
+
+.burgerLine {
+	display: block;
+	width: 22px;
+	height: 2px;
+	background: var(--text-primary);
+	transition: all var(--transition-fast);
+}
+
+.burgerBtnOpen {
+	.burgerLine:nth-child(1) {
+		transform: translateY(7px) rotate(45deg);
+	}
+	.burgerLine:nth-child(2) {
+		opacity: 0;
+	}
+	.burgerLine:nth-child(3) {
+		transform: translateY(-7px) rotate(-45deg);
+	}
+}
+
+.burgerDropdown {
+	position: absolute;
+	top: calc(100% + 12px);
+	right: 0;
+	min-width: 200px;
+	background: var(--bg-primary);
+	border: 2px solid var(--border-accent);
+	box-shadow: 4px 4px 0px var(--border-medium);
+	z-index: 200;
+	display: flex;
+	flex-direction: column;
+	animation: fadeIn var(--transition-fast) ease-out;
+}
+
+.burgerUsername {
+	padding: var(--space-md) var(--space-lg);
+	font-size: var(--font-size-sm);
+	font-weight: 700;
+	color: var(--text-accent);
+	border-bottom: 1px solid var(--border-subtle);
+}
+
+.burgerLink {
+	display: block;
+	padding: var(--space-md) var(--space-lg);
+	font-size: var(--font-size-sm);
+	font-weight: 500;
+	color: var(--text-secondary);
+	text-decoration: none;
+	transition: all var(--transition-fast);
+	background: none;
+	border: none;
+	text-align: left;
+	cursor: pointer;
+	font-family: var(--font-family);
+	width: 100%;
+
+	&:hover,
+	&.active {
+		color: var(--text-primary);
+		background: var(--bg-glass);
+	}
+}
+
+.burgerLogout {
+	border-top: 1px solid var(--border-subtle);
+	color: var(--danger);
+
+	&:hover {
+		color: var(--danger);
+		background: var(--danger-bg);
+	}
+}
+
+@media (max-width: 768px) {
+	.appLayout {
+		margin: 0;
+		height: 100vh;
+		border: none;
+		box-shadow: none;
+	}
+
+	.headerNavDesktop,
+	.headerUserDesktop {
+		display: none;
+	}
+
+	.headerMobile {
+		display: block;
+		margin-left: auto;
+	}
+
+	.headerInner {
+		padding: 0 var(--space-md);
+		justify-content: space-between;
+	}
+
+	.headerLogo {
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	.mainContent {
+		padding: var(--space-lg) var(--space-md);
+	}
+}
